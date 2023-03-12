@@ -1,0 +1,45 @@
+{% extends 'basic.html' %}
+{% block title %} contact{% endblock %}
+{% block body %}
+<div class="container">
+    {% if user.is_authenticated %}
+    <h3 class="my-3"> Contact Us</h3>
+
+    <form action="/contact/" method="post"> {% csrf_token %}
+
+        <div class="form-group">
+            <label for="name">Phone number</label>
+            <input type="tel" class="form-control" id="phone" name = "phone" placeholder="Enter your phone number" minlength="10" maxlength="13" required>
+        </div>
+
+            <input type="hidden" class="form-control" id="name" name = "name" value="{{request.user}}">
+            <input type="hidden" class="form-control" id="email" name="email" value="{{request.user.email}}">
+
+        <div class="form-group">
+          <label for="name">How may we help you?</label>
+          <textarea class="form-control" id="query" name="query" rows="3"  required ></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary mb-2">Submit</button>
+      </form>
+    {% else %}
+    <div class="container">
+    <H4 class="my-4"> Login to contact Rhythm cosmetics</H4>
+    <button class="btn btn-primary" type="button" onclick="document.getElementById('credButton').click()" >Login with Google</button>
+    </div>
+    {% endif %}
+</div>
+
+
+{% endblock %}
+{% block js %}
+<script>
+    console.log('running');
+    {% if thank %}
+    console.log('still running');
+    alert('Thanks for contacting us. We will get back to you asap');
+
+    document.location = "/";
+    {% endif %}
+</script>
+
+{% endblock %}

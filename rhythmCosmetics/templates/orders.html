@@ -1,0 +1,106 @@
+{% extends 'basic.html' %}
+{% block title %} rhythmOrders {% endblock %}
+{% block css %}
+body {
+			font-family: Arial, sans-serif;
+			background-color: #f2f2f2;
+		}
+		h1 {
+			text-align: center;
+			margin-top: 50px;
+			color: #333;
+		}
+		.order-container {
+			max-width: 90%;
+			margin: 0 auto;
+			padding: 30px;
+			background-color: #fff;
+			border-radius: 5px;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+		}
+		.orders {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+		}
+		.order {
+			padding: 20px;
+			margin-bottom: 20px;
+			background-color: #fff;
+			border-radius: 5px;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+		}
+		.order-status {
+			float: right;
+			padding: 5px 10px;
+			border-radius: 20px;
+			font-weight: bold;
+			color: #fff;
+
+		}
+        .order-status.confirmed {
+			background-color: #fa9999;
+		}
+		.order-status.not-confirmed {
+			background-color: #4d4d4d;
+		}
+		.order-status.shipped {
+			background-color: #16d348;
+		}
+
+
+{% endblock %}
+{% block body %}
+ {% if allOrders %}
+<p class="breadcrumb-item active my-5 container" aria-current="page">Thank you for purchasing with rhythmCosmetics, here are your recent orders</p>
+<input type='hidden' id='count' value={{count}}>
+
+
+                <div class="container">
+                    <ul class="orders">
+                    {% for i in allOrders %}
+                    <li class="order">
+    				<span>{{i.timestamp}}</span>
+    				{% if i.dispatched == 1 %}
+    				<a href=""><span class="order-status shipped">Shipped</span></a>
+    				{% elif i.payment_conf == 1 %}
+    				<a href=""><span class="order-status confirmed">Order confirmed</span></a>
+    				{% else %}
+    				<a href=""></a><span class="order-status not-confirmed">waiting</span></a>
+    				{% endif %}
+
+
+    				<p>&#8377 {{i.amount}}</p>
+    			    </li>
+
+
+                    {% endfor %}
+                </ul>
+                </div>
+{% else %}
+<p class="breadcrumb-item active my-5 container" aria-current="page">There are no orders placed by you as of now, please head to <a href="/cart">your cart</a> or <a href="/">continue shopping</a></p>
+
+{% endif %}
+{% endblock %}
+
+
+
+{% block js %}
+<script>
+
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

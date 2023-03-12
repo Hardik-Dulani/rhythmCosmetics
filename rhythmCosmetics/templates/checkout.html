@@ -1,0 +1,200 @@
+{% extends 'basic.html' %}
+{% block title %} Checkout {% endblock %}
+{% block css %}
+
+.gradient-custom {
+background: -webkit-linear-gradient(left, #3931af, #00c6ff);
+}
+
+@media (min-width: 775px){
+.my-container{
+    margin-left:2rem;
+    margin-right:2rem;
+}
+.card-custom {
+
+
+border-bottom-left-radius: 10% 50%;
+border-top-left-radius: 10% 50%;
+border-bottom-right-radius: 10% 50%;
+border-top-right-radius: 10% 50%;
+background-color: #f8f9fa ;
+}
+.my-upi{
+    height:20rem;
+    margin-left:3rem;
+}
+}
+
+
+@media (max-width: 774px){
+.card-custom {
+
+
+border-bottom-left-radius: 10% 10%;
+border-top-left-radius: 10% 10%;
+border-bottom-right-radius: 10% 10%;
+border-top-right-radius: 10% 10%;
+background-color: #f8f9fa ;
+}
+.my-upi{
+    height:20rem;
+    margin-left:-2rem;
+}
+}
+
+.input-custom {
+background-color: white ;
+}
+
+.white-text {
+color: hsl(52, 0%, 98%);
+font-weight: 100 ;
+font-size: 14px;
+}
+
+.back-button {
+background-color: hsl(52, 0%, 98%);
+font-weight: 700;
+color: black ;
+margin-top: 50px ;
+}
+
+{% endblock %}
+{% block body %}
+
+
+  <div class=" justify-content-center mt-5 mx-3">
+    <div class="card card-custom pb-4">
+      <div class="card-body mt-0 my-container">
+        <div class="text-center mb-3 pb-2 mt-3">
+          <h4 style="color: #495057 ;">Delivery Details</h4>
+        </div>
+
+            <form method="post" action="/checkout/">{% csrf_token %}
+                <input type="hidden" name="itemsJson" id="itemsJson">
+                <input type="hidden" name="primary_prod" id="primary_prod">
+
+                <input type="hidden" name="amount" id="amount">
+
+          <div class="row mb-4">
+            <div class="col-lg-8 col-xl-8">
+              <div class="form-outline">
+                <input type="hidden" id="name" name="name" value={{request.user}} class="form-control input-custom" />
+
+              </div>
+            </div>
+            <div class="col-lg-8 col-xl-8">
+              <div class="form-outline">
+                <input type="hidden" id="email" value="{{request.user.email}}" name="email" class="form-control input-custom" />
+
+              </div>
+            </div>
+          </div>
+                    <div class="row mb-4">
+            <div class="col-lg-12 col-xl-12">
+              <div class="form-outline">
+                <input type="text" id="address" class="form-control input-custom" required name="address" placeholder="Address" />
+
+              </div>
+            </div>
+
+          </div>
+          <div class="row mb-4">
+            <div class="col-lg-8 col-xl-8">
+              <div class="form-outline">
+                <input type="text" id="city" class="form-control input-custom mb-4" name="city" placeholder = "City" required />
+
+              </div>
+            </div>
+            <div class="col-lg-4 col-xl-4">
+              <div class="form-outline">
+                <input type="text" id="zip_code" class="form-control input-custom" name = "zip_code" required placeholder="Zip code" minlength="6" />
+
+              </div>
+            </div>
+          </div>
+          <div class="row mb-4">
+            <div class="col-lg-8 col-xl-8">
+              <div class="form-outline">
+                <input type="text" id="state" name="state" class="form-control input-custom mb-4" required placeholder="State" />
+
+              </div>
+            </div>
+            <div class="col-lg-4 col-xl-4">
+              <div class="form-outline">
+                <input type="tel" id="phone" name="phone" class="form-control input-custom" required placeholder="Phone number" minlength="10" maxlength="13"  />
+              </div>
+            </div>
+          </div>
+
+
+
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class=" justify-content-center mt-5 mx-3">
+    <div class="card card-custom pb-4">
+      <div class="card-body mt-0 mx-5 row">
+          <div class= "col-12 col-sm-12 col-md-12 col-lg-5 col-xl-5">
+              <img src="/media/images/upi_qr1.jpg" class="my-upi">
+          </div>
+        <div class="form-outline col-lg-6 col-xl-6 mt-3 align-self-center">
+            <p class="breadcrumb-item active my-2" aria-current="page">Your total cart value is <b>&#8377<span id="totalPrice"></span></b>
+            <input type="text" id="utr" class="form-control input-custom" required name="utr" minlength="10" maxlength="25" placeholder="UTR of payment" />
+            <button class='btn btn-primary mt-3' type="submit"  id ='place'>Confirm Order</button>
+        </div>
+
+    </div>
+    </div>
+    </div>
+    </form>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    if (localStorage.getItem('cart') == null) {
+        var cart = {};
+    } else {
+        cart = JSON.parse(localStorage.getItem('cart'));
+    }
+    console.log(cart);
+    var sum = 0;
+    var totalPrice = 0;
+
+
+
+
+        for (item in cart) {
+            qty = cart[item][0];
+            sum = sum + qty;
+            itemPrice = cart[item][2];
+            totalPrice = totalPrice + qty*itemPrice;
+          }
+
+
+    document.getElementById('cart').innerHTML = sum;
+    document.getElementById('totalPrice').innerHTML = totalPrice;
+    $('#itemsJson').val(JSON.stringify(cart));
+    $('#primary_prod').val(JSON.stringify(cart[0]));
+    {% if thank %}
+
+    localStorage.clear();
+    document.location = "/orders";
+    {% endif %}
+    $('#amount').val($('#totalPrice').html())
+
+    function clearCart() {
+    cart = JSON.parse(localStorage.getItem('cart'));
+    localStorage.clear();
+    cart = {};
+    updateCart(cart);
+
+}
+    </script>
+
+
+{% endblock %}
